@@ -1,0 +1,50 @@
+# ─── Python ───────────────────────────
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pycache
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.eggs/
+*.egg-info/
+*.egg
+dist/
+build/
+
+# ─── Environment / Secrets ────────────
+.env
+.env.local
+.env.*.local
+
+# ─── VidMind Runtime Data ─────────────
+shorts_videos/
+useful_data/
+chroma_db/
+
+# ─── OS Files ─────────────────────────
+.DS_Store
+.DS_Store?
+Thumbs.db
+desktop.ini
+
+# ─── Editors ──────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ─── Node (just in case) ──────────────
+node_modules/
+
+# ─── Logs ─────────────────────────────
+*.log
+logs/
+
+# ─── Misc ─────────────────────────────
+*.tmp
+*.bak
+.cache/

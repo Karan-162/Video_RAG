@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VidMind</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --surface3: #1e1e28;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --accent: #7c6af7;
+    --accent2: #5e4fe8;
+    --accent-glow: rgba(124,106,247,0.18);
+    --teal: #2dd4bf;
+    --amber: #f59e0b;
+    --text: #f0eff8;
+    --text2: #9897b0;
+    --text3: #5c5b72;
+    --danger: #f87171;
+    --success: #34d399;
+    --radius: 14px;
+    --radius-lg: 20px;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(rgba(124,106,247,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(124,106,247,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  nav {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(12px);
+    flex-shrink: 0;
+  }
+
+  .logo {
+    font-family: var(--font-head);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    color: #fff;
+  }
+
+  .logo span { color: var(--accent); }
+
+  .nav-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    background: var(--surface2);
+    letter-spacing: 0.3px;
+  }
+
+  .badge.live {
+    color: var(--success);
+    border-color: rgba(52,211,153,0.25);
+    background: rgba(52,211,153,0.08);
+  }
+
+  .badge.live::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+    margin-right: 5px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .main {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .left-panel {
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .panel-header {
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-title {
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 14px;
+  }
+
+  .url-wrap { position: relative; }
+
+  .url-input {
+    width: 100%;
+    padding: 11px 44px 11px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .url-input::placeholder { color: var(--text3); }
+  .url-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .url-icon {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 13px;
+    pointer-events: none;
+  }
+
+  .video-section {
+    padding: 16px 22px;
+    flex-shrink: 0;
+  }
+
+  .video-preview {
+    width: 100%;
+    aspect-ratio: 9/16;
+    max-height: 200px;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .video-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text3);
+    font-size: 12px;
+  }
+
+  .video-placeholder i { font-size: 28px; color: var(--text3); }
+
+  .video-preview.has-video iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .process-btn {
+    margin: 0 22px 16px;
+    width: calc(100% - 44px);
+    padding: 12px;
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-family: var(--font-head);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .process-btn:hover {
+    background: var(--accent2);
+    box-shadow: 0 4px 20px rgba(124,106,247,0.35);
+  }
+
+  .process-btn:active { transform: scale(0.98); }
+  .process-btn:disabled {
+    background: var(--surface3);
+    color: var(--text3);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .status-bar {
+    margin: 0 22px 16px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status-bar.show { display: flex; }
+  .status-bar.info { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(124,106,247,0.2); }
+  .status-bar.success { background: rgba(52,211,153,0.08); color: var(--success); border: 1px solid rgba(52,211,153,0.2); }
+  .status-bar.error { background: rgba(248,113,113,0.08); color: var(--danger); border: 1px solid rgba(248,113,113,0.2); }
+  .status-bar.loading { background: rgba(245,158,11,0.08); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+
+  .meta-card {
+    margin: 0 22px;
+    padding: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: none;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .meta-card.show { display: flex; }
+
+  .meta-title {
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .meta-item { display: flex; flex-direction: column; gap: 2px; }
+
+  .meta-label {
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 600;
+  }
+
+  .meta-value { font-size: 12px; color: var(--text2); }
+
+  .panel-spacer { flex: 1; }
+
+  .model-info {
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .model-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: var(--surface3);
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  .model-chip i { font-size: 12px; color: var(--accent); }
+
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .chat-header {
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .chat-title {
+    font-family: var(--font-head);
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .chat-title span { color: var(--text2); font-weight: 400; font-size: 13px; font-family: var(--font-body); margin-left: 8px; }
+
+  .clear-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text2);
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .clear-btn:hover { border-color: var(--danger); color: var(--danger); background: rgba(248,113,113,0.06); }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    scroll-behavior: smooth;
+  }
+
+  .chat-messages::-webkit-scrollbar { width: 4px; }
+  .chat-messages::-webkit-scrollbar-track { background: transparent; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+  .empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    color: var(--text3);
+    text-align: center;
+    padding: 40px;
+  }
+
+  .empty-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--surface2);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .empty-state h3 {
+    font-family: var(--font-head);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text2);
+  }
+
+  .empty-state p { font-size: 13px; max-width: 300px; line-height: 1.7; }
+
+  .suggestion-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .chip {
+    padding: 7px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 30px;
+    font-size: 12px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+  .msg {
+    display: flex;
+    gap: 10px;
+    animation: msgIn 0.25s ease-out;
+  }
+
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg.user { flex-direction: row-reverse; }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    font-weight: 700;
+    font-family: var(--font-head);
+  }
+
+  .avatar.user-av { background: var(--accent); color: #fff; }
+  .avatar.bot-av { background: var(--surface2); color: var(--teal); border: 1px solid var(--border2); }
+
+  .bubble {
+    max-width: 75%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .msg.user .bubble {
+    background: var(--accent);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .msg.bot .bubble {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+  }
+
+  .bubble-section { margin-bottom: 8px; }
+
+  .bubble-section-label {
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+
+  .typing { display: flex; gap: 10px; align-items: flex-end; }
+
+  .typing-dots {
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    border-bottom-left-radius: 4px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    background: var(--text3);
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+  }
+
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-6px); }
+  }
+
+  .chat-input-wrap {
+    padding: 16px 28px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+    flex-shrink: 0;
+  }
+
+  .input-row { display: flex; gap: 10px; align-items: flex-end; }
+
+  .chat-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    outline: none;
+    resize: none;
+    min-height: 44px;
+    max-height: 120px;
+    line-height: 1.5;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .chat-input::placeholder { color: var(--text3); }
+  .chat-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+  .send-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    flex-shrink: 0;
+  }
+
+  .send-btn:hover { background: var(--accent2); box-shadow: 0 4px 16px rgba(124,106,247,0.4); }
+  .send-btn:active { transform: scale(0.95); }
+  .send-btn:disabled { background: var(--surface3); color: var(--text3); cursor: not-allowed; box-shadow: none; }
+
+  .input-hint { margin-top: 8px; font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+
+  .progress-steps { display: flex; flex-direction: column; gap: 4px; padding: 0 22px 16px; }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--text3);
+    transition: all 0.3s;
+  }
+
+  .step.active { color: var(--amber); background: rgba(245,158,11,0.06); }
+  .step.done { color: var(--success); }
+  .step.waiting { color: var(--text3); }
+
+  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .step.active .step-dot { animation: pulse 1.5s infinite; }
+
+  .spinning { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <div class="logo-icon"><i class="fa-solid fa-film"></i></div>
+    Vid<span>Mind</span>
+  </div>
+  <div class="nav-badges">
+    <div class="badge">Whisper ASR</div>
+    <div class="badge">BLIP Vision</div>
+    <div class="badge">LLaMA 3.1</div>
+    <div class="badge live">API Live</div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="left-panel">
+    <div class="panel-header">
+      <div class="panel-title">Video Source</div>
+      <div class="url-wrap">
+        <input class="url-input" id="urlInput" type="text" placeholder="Paste YouTube Shorts URL..." />
+        <i class="fa-solid fa-link url-icon"></i>
+      </div>
+    </div>
+
+    <div class="video-section">
+      <div class="video-preview" id="videoPreview">
+        <div class="video-placeholder" id="videoPlaceholder">
+          <i class="fa-regular fa-circle-play"></i>
+          <span>Preview appears here</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="process-btn" id="processBtn" onclick="processVideo()">
+      <i class="fa-solid fa-bolt"></i>
+      Process Video
+    </button>
+
+    <div class="status-bar" id="statusBar"></div>
+
+    <div class="progress-steps" id="progressSteps" style="display:none;">
+      <div class="step" id="step1"><div class="step-dot"></div> Downloading video</div>
+      <div class="step" id="step2"><div class="step-dot"></div> Extracting frames &amp; audio</div>
+      <div class="step" id="step3"><div class="step-dot"></div> Transcribing speech</div>
+      <div class="step" id="step4"><div class="step-dot"></div> Generating captions</div>
+      <div class="step" id="step5"><div class="step-dot"></div> Building RAG index</div>
+    </div>
+
+    <div class="meta-card" id="metaCard">
+      <div class="meta-title" id="metaTitle">—</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Uploader</div>
+          <div class="meta-value" id="metaUploader">—</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Duration</div>
+          <div class="meta-value" id="metaDuration">—</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Status</div>
+          <div class="meta-value" style="color:var(--success)" id="metaStatus">—</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Chunks</div>
+          <div class="meta-value" id="metaChunks">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-spacer"></div>
+
+    <div class="model-info">
+      <div class="model-chip"><i class="fa-solid fa-microchip-ai"></i> LLaMA 3.1 8B via Groq</div>
+      <div class="model-chip"><i class="fa-solid fa-database"></i> ChromaDB</div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="chat-header">
+      <div class="chat-title">
+        Chat
+        <span id="chatSubtitle">Process a video to begin</span>
+      </div>
+      <button class="clear-btn" onclick="clearChat()"><i class="fa-regular fa-trash-can"></i> Clear</button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon"><i class="fa-regular fa-comments"></i></div>
+        <h3>Ask anything about your video</h3>
+        <p>Paste a YouTube Shorts URL, process it, and start chatting with its content using AI.</p>
+        <div class="suggestion-chips">
+          <div class="chip" onclick="fillChip(this)">What is this video about?</div>
+          <div class="chip" onclick="fillChip(this)">Summarize the key points</div>
+          <div class="chip" onclick="fillChip(this)">What hashtags are used?</div>
+          <div class="chip" onclick="fillChip(this)">Who uploaded this?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-wrap">
+      <div class="input-row">
+        <textarea class="chat-input" id="chatInput" placeholder="Ask about the video…" rows="1"
+          onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+      <div class="input-hint">
+        <i class="fa-regular fa-keyboard"></i> Enter to send &nbsp;·&nbsp; Shift+Enter for new line
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'http://127.0.0.1:8000';
+let isReady = false;
+let isProcessing = false;
+let isChatting = false;
+
+const urlInput = document.getElementById('urlInput');
+const processBtn = document.getElementById('processBtn');
+const statusBar = document.getElementById('statusBar');
+const progressSteps = document.getElementById('progressSteps');
+const metaCard = document.getElementById('metaCard');
+const chatMessages = document.getElementById('chatMessages');
+const emptyState = document.getElementById('emptyState');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const chatSubtitle = document.getElementById('chatSubtitle');
+
+urlInput.addEventListener('input', () => {
+  const v = urlInput.value.trim();
+  const preview = document.getElementById('videoPreview');
+  if (v.includes('youtube.com') || v.includes('youtu.be')) {
+    const id = extractYTId(v);
+    if (id) {
+      preview.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}" allow="accelerometer; autoplay; encrypted-media; gyroscope" allowfullscreen></iframe>`;
+      preview.classList.add('has-video');
+    }
+  } else if (!v) {
+    preview.innerHTML = `<div class="video-placeholder"><i class="fa-regular fa-circle-play"></i><span>Preview appears here</span></div>`;
+    preview.classList.remove('has-video');
+  }
+});
+
+function extractYTId(url) {
+  const m = url.match(/(?:shorts\/|v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+function showStatus(msg, type) {
+  statusBar.className = `status-bar show ${type}`;
+  const icons = { info: 'fa-circle-info', success: 'fa-circle-check', error: 'fa-circle-exclamation', loading: 'fa-spinner spinning' };
+  statusBar.innerHTML = `<i class="fa-solid ${icons[type] || 'fa-circle-info'}"></i><span>${msg}</span>`;
+}
+
+const stepIds = ['step1','step2','step3','step4','step5'];
+
+function showSteps() {
+  progressSteps.style.display = 'flex';
+  stepIds.forEach(id => { document.getElementById(id).className = 'step waiting'; });
+}
+
+function setStep(n) {
+  stepIds.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (i < n) el.className = 'step done';
+    else if (i === n) el.className = 'step active';
+    else el.className = 'step waiting';
+  });
+}
+
+function hideSteps() { progressSteps.style.display = 'none'; }
+
+async function processVideo() {
+  const url = urlInput.value.trim();
+  if (!url) { showStatus('Please enter a YouTube Shorts URL', 'error'); return; }
+  if (isProcessing) return;
+
+  isProcessing = true;
+  isReady = false;
+  processBtn.disabled = true;
+  sendBtn.disabled = true;
+  metaCard.classList.remove('show');
+  showSteps();
+  showStatus('Starting pipeline...', 'loading');
+
+  let step = 0;
+  const stepInterval = setInterval(() => {
+    setStep(step);
+    step++;
+    if (step >= stepIds.length) clearInterval(stepInterval);
+  }, 3200);
+
+  try {
+    const res = await fetch(`${API}/process-video`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+    clearInterval(stepInterval);
+    stepIds.forEach(id => document.getElementById(id).className = 'step done');
+
+    const data = await res.json();
+
+    if (data.status === 'success') {
+      showStatus('Video ready — start chatting!', 'success');
+      isReady = true;
+      sendBtn.disabled = false;
+      chatSubtitle.textContent = data.title || 'Video loaded';
+
+      document.getElementById('metaTitle').textContent = data.title || 'YouTube Shorts';
+      document.getElementById('metaUploader').textContent = data.uploader || 'Unknown';
+      document.getElementById('metaDuration').textContent = data.duration ? `${data.duration}s` : '—';
+      document.getElementById('metaStatus').textContent = 'Indexed';
+      document.getElementById('metaChunks').textContent = '~8 chunks';
+      metaCard.classList.add('show');
+
+      addBotMsg(`Video **"${data.title || 'this video'}"** has been processed and indexed. I've analyzed the transcript, visual frames, and metadata. What would you like to know?`);
+    } else {
+      showStatus(data.message || 'Processing failed', 'error');
+      hideSteps();
+    }
+  } catch (e) {
+    clearInterval(stepInterval);
+    showStatus('Cannot reach API server — is it running?', 'error');
+    hideSteps();
+  }
+
+  isProcessing = false;
+  processBtn.disabled = false;
+}
+
+function addUserMsg(text) {
+  hideEmpty();
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.innerHTML = `<div class="avatar user-av">U</div><div class="bubble">${escHtml(text)}</div>`;
+  chatMessages.appendChild(div);
+  scrollChat();
+}
+
+function addBotMsg(text) {
+  hideEmpty();
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  const formatted = formatResponse(text);
+  div.innerHTML = `<div class="avatar bot-av"><i class="fa-solid fa-robot" style="font-size:13px"></i></div><div class="bubble">${formatted}</div>`;
+  chatMessages.appendChild(div);
+  scrollChat();
+}
+
+function formatResponse(text) {
+  if (text.includes('From Video:') && text.includes('Enhanced Explanation:')) {
+    const parts = text.split(/Enhanced Explanation:/);
+    const fromVideo = parts[0].replace('From Video:', '').trim();
+    const enhanced = parts[1] ? parts[1].trim() : '';
+    return `<div class="bubble-section"><div class="bubble-section-label">From Video</div>${escHtml(fromVideo)}</div>` +
+           (enhanced ? `<div class="bubble-section"><div class="bubble-section-label" style="color:var(--accent)">Enhanced</div>${escHtml(enhanced)}</div>` : '');
+  }
+  return escHtml(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function addTyping() {
+  hideEmpty();
+  const div = document.createElement('div');
+  div.className = 'typing';
+  div.id = 'typingIndicator';
+  div.innerHTML = `<div class="avatar bot-av"><i class="fa-solid fa-robot" style="font-size:13px"></i></div><div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  chatMessages.appendChild(div);
+  scrollChat();
+}
+
+function removeTyping() {
+  const t = document.getElementById('typingIndicator');
+  if (t) t.remove();
+}
+
+function hideEmpty() {
+  if (emptyState) emptyState.style.display = 'none';
+}
+
+function scrollChat() { chatMessages.scrollTop = chatMessages.scrollHeight; }
+
+async function sendMessage() {
+  const q = chatInput.value.trim();
+  if (!q || isChatting) return;
+  if (!isReady) { showStatus('Process a video first!', 'info'); return; }
+
+  isChatting = true;
+  sendBtn.disabled = true;
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+
+  addUserMsg(q);
+  addTyping();
+
+  try {
+    const res = await fetch(`${API}/ask`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: q })
+    });
+    const data = await res.json();
+    removeTyping();
+    if (data.status === 'success') {
+      addBotMsg(data.answer);
+    } else {
+      addBotMsg('Sorry, something went wrong: ' + (data.message || 'unknown error'));
+    }
+  } catch(e) {
+    removeTyping();
+    addBotMsg('Cannot reach API server. Make sure it is running at localhost:8000.');
+  }
+
+  isChatting = false;
+  sendBtn.disabled = false;
+  chatInput.focus();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function clearChat() {
+  const msgs = chatMessages.querySelectorAll('.msg, .typing');
+  msgs.forEach(m => m.remove());
+  if (emptyState) emptyState.style.display = 'flex';
+  chatSubtitle.textContent = 'Process a video to begin';
+}
+
+function fillChip(el) {
+  chatInput.value = el.textContent;
+  chatInput.focus();
+}
+</script>
+</body>
+</html>
