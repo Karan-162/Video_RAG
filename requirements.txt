@@ -1,0 +1,19 @@
+cat > requirements.txt << 'EOF'
+fastapi
+uvicorn
+python-dotenv
+yt-dlp
+moviepy
+SpeechRecognition
+openai-whisper
+Pillow
+transformers>=4.36.0
+torch>=2.0.0
+torchvision
+langchain>=0.3.0
+langchain-groq>=0.2.0
+langchain-chroma>=0.1.0
+langchain-huggingface>=0.1.0
+langchain-text-splitters>=0.3.0
+sentence-transformers
+chromadb
